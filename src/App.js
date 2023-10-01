@@ -16,12 +16,18 @@ export const ACTIONS = {
 function reducer(state, { type, payload }) {
   switch (type) {
     case ACTIONS.ADD_DIGIT:
+      if(state.currentState=="00") return{
+        ...state,
+        currentState: `${""}${payload.digit}`,
+      }
+    
       return {
         ...state,
         currentState: `${state.currentState || ""}${payload.digit}`,
       }
     case ACTIONS.CHOOSE_OPERATION:
       if (state.previousState == null && state.currentState==null) return state
+    
       if (state.previousState != null && state.currentState!=null) return {
         ...state,
         currentState: null,
@@ -45,11 +51,16 @@ function reducer(state, { type, payload }) {
     case ACTIONS.CLEAR:
       return {
         //null state
+        ...state,
+        currentState: "00",
+        operation:null,
+        previousState:null,
+
       }
     case ACTIONS.DELETE_DIGIT:
       if(state.currentState==null) return state
       return {
-        ...state,
+        ...state, 
         currentState: state.currentState.slice(0, -1)
       }
     case ACTIONS.EVALVATE:
@@ -97,7 +108,8 @@ const evalvate = ({ currentState, previousState, operation }) => {
 
 function App() {
 
-  const [{ currentState, previousState, operation }, dispatch] = useReducer(reducer, {});
+  
+  const [{ currentState, previousState, operation }, dispatch] = useReducer(reducer, { currentState:"00"});
 
   return (
     <>
